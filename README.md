@@ -96,3 +96,77 @@ $$\text{Fitness}(\mathbf{z}) = \frac{1}{2} \left( \frac{TP}{TP + FN} + \frac{TN}
                             |
                [Phase 5: Final Evaluation]
             (Cost-Weighted Random Forest Engine)
+
+## 💻 5. Pipeline Implementation Phases
+
+This project is structured into five distinct data processing and modeling phases.
+
+### Phase 1: Data Acquisition & Synthetic Pairing
+Synchronizes clinical images from the DermNet Psoriasis repository with patient narratives from the UCI ML Drug Review dataset. Numerical drug satisfaction scores (scale 1-10) are programmatically thresholded into discrete clinical severity targets (Mild, Moderate, Severe) to create a unified, multimodal dataset.
+
+### Phase 2: Deep Visual Feature Extraction
+Utilizes a pre-trained **DenseNet121** backbone to process standardized 224 x 224 images. The top classification layer is removed, and Global Average Pooling is applied to extract a robust 1,024-dimensional visual descriptor vector for each image, capturing complex spatial geometries without requiring from-scratch training.
+
+### Phase 3: Semantic Transformer Embeddings
+Patient narratives are tokenized and processed via a **DistilBERT** language model. By isolating the `[CLS]` token embedding from the final hidden state, the pipeline generates a dense 768-dimensional semantic summary vector that mathematically represents the patient's subjective symptoms.
+
+### Phase 4: Heterogeneous Feature Fusion
+The visual and semantic vectors are horizontally concatenated into a unified 1,792-dimensional matrix. A custom Genetic Algorithm (GA) is then deployed over this fused space to perform aggressive dimensionality reduction, isolating the most highly discriminative biomarkers and eliminating redundant noise.
+
+### Phase 5: Balanced Multi-Stream Validation
+Addresses the inherent clinical class imbalance (rare Severe cases vs. frequent Mild cases) by grouping the targets into a Binary configuration and applying **SMOTE** (Synthetic Minority Over-sampling Technique). The final feature mask is evaluated by a cost-sensitive Random Forest Classifier initialized with balanced class weights to maximize recall on the minority class.
+
+---
+
+## 📊 6. Empirical Performance Verification
+
+By utilizing Balanced Accuracy within the Genetic Algorithm’s fitness loop, the pipeline effectively eliminates majority-class shortcuts.
+
+```text
+✅ FINAL BINARY ACCURACY: 85.83%
+
+📊 CLASSIFICATION REPORT:
+              precision    recall  f1-score   support
+
+  Non-Severe       0.86      0.99      0.92        99
+      Severe       0.83      0.24      0.37        21
+
+    accuracy                           0.86       120
+   macro avg       0.85      0.61      0.65       120
+
+## 📂 7. Repository Structure & Reproducibility
+
+To ensure a clean, lightweight footprint without hosting massive raw imagery files directly on GitHub, the project records pre-extracted descriptors inside serialized matrix arrays.
+
+### Directory Roadmap
+
+```text
+├── .gitignore
+├── README.md
+├── notebooks/
+│   └── psoriasis_multimodal_pipeline.ipynb
+└── data/
+    ├── dermo_social_master.csv        # Phase 1: Generated paired dataset mappings
+    ├── vision_features.npy            # Phase 2: Serialized DenseNet121 embeddings
+    ├── semantic_features.npy          # Phase 3: Serialized DistilBERT embeddings
+    └── optimal_features_indices.npy   # Phase 4: Optimal feature selections masks
+
+---
+
+## 📬 Contact
+
+**Built by Pushkar Singh** * **GitHub:** [@PushkarSingh20](https://github.com/PushkarSingh20)  
+* **LinkedIn:** [Pushkar Singh](https://www.linkedin.com/in/pushkar-singh-512648235/)  
+* **Email:** pushkarofficial20@gmail.com  
+
+> *Hire me before someone else does.*
+
+---
+
+## 📜 License
+
+**Dermo-Social Pipeline** is licensed under the **BSD 3-Clause License**.
+
+Copyright (c) 2026, Pushkar Singh. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following described conditions are met.
