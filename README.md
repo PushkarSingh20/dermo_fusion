@@ -1,4 +1,4 @@
-# 🧬 Dermo-Social Pipeline: Multimodal Psoriasis Severity Classification
+# 🧬 A Dual-Stream Vision-Transformer and Genetic Optimization Framework for Dermatological Severity Classification
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](https://opensource.org/licenses/MIT)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
