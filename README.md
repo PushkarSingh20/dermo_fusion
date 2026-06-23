@@ -97,3 +97,145 @@ $$\text{Fitness}(\mathbf{z}) = \frac{1}{2} \left( \frac{TP}{TP + FN} + \frac{TN}
                             |
                [Phase 5: Final Evaluation]
             (Cost-Weighted Random Forest Engine)
+```
+
+---
+
+## 💻 5. Pipeline Implementation Phases
+
+This project is structured into five distinct data processing and modeling phases.
+
+### Phase 1: Data Acquisition & Synthetic Pairing
+
+Synchronizes clinical images from the DermNet Psoriasis repository with patient narratives from the UCI ML Drug Review dataset. Numerical drug satisfaction scores (1–10) are transformed into discrete clinical severity targets (Mild, Moderate, Severe) to construct a multimodal learning dataset.
+
+### Phase 2: Deep Visual Feature Extraction
+
+A pre-trained DenseNet121 backbone processes standardized 224×224 RGB lesion images. The final classification layer is removed and Global Average Pooling is applied to generate a 1024-dimensional visual representation.
+
+### Phase 3: Semantic Transformer Embeddings
+
+Patient narratives are encoded using DistilBERT. The final hidden-state `[CLS]` token embedding is extracted to generate a 768-dimensional semantic representation of patient-reported symptoms.
+
+### Phase 4: Heterogeneous Feature Fusion
+
+Visual and semantic feature vectors are concatenated into a unified 1792-dimensional representation:
+
+```math
+1024\;(\text{Vision}) + 768\;(\text{Language}) = 1792
+```
+
+A Genetic Algorithm is subsequently applied to identify the most discriminative subset of fused features.
+
+### Phase 5: Balanced Multi-Stream Validation
+
+To mitigate class imbalance, SMOTE (Synthetic Minority Oversampling Technique) is applied to the training data. The optimized feature subset is evaluated using a class-balanced Random Forest classifier.
+
+---
+
+## 📊 6. Empirical Performance Verification
+
+By incorporating Balanced Accuracy into the Genetic Algorithm fitness function, the framework avoids majority-class bias and encourages minority-class recognition.
+
+### Final Binary Classification Performance
+
+```text
+FINAL BINARY ACCURACY: 85.83%
+
+CLASSIFICATION REPORT
+
+              precision    recall    f1-score    support
+
+Non-Severe       0.86       0.99       0.92         99
+Severe           0.83       0.24       0.37         21
+
+Accuracy                               0.86        120
+Macro Avg        0.85       0.61       0.65        120
+```
+
+### Key Findings
+
+#### High Precision for Severe Cases
+
+The model achieves **83% precision** on Severe cases, indicating that when the system predicts a severe clinical condition, the prediction is usually correct.
+
+#### Effective Multimodal Fusion
+
+The Genetic Algorithm selected important features originating from both DenseNet121 visual embeddings and DistilBERT semantic embeddings, demonstrating that image and text information contribute jointly to decision making.
+
+#### Reduced Majority-Class Bias
+
+Balanced Accuracy optimization prevents the model from exploiting class imbalance and encourages more clinically meaningful feature selection.
+
+---
+
+## 📂 7. Repository Structure & Reproducibility
+
+To keep the repository lightweight, raw image assets are excluded and only processed feature representations are stored.
+
+### Directory Structure
+
+```text
+.
+├── README.md
+├── derma_fusion.ipynb
+├── dermo_social_master.csv
+├── vision_features.npy
+├── semantic_features.npy
+├── optimal_features_indices.npy
+└── drugsComTest_raw.csv.zip
+```
+
+### File Descriptions
+
+| File | Purpose |
+|--------|----------|
+| `derma_fusion.ipynb` | Complete training and evaluation pipeline |
+| `dermo_social_master.csv` | Paired multimodal dataset |
+| `vision_features.npy` | DenseNet121 embeddings |
+| `semantic_features.npy` | DistilBERT embeddings |
+| `optimal_features_indices.npy` | Selected features from Genetic Algorithm |
+| `drugsComTest_raw.csv.zip` | Raw textual review source data |
+
+### Recommended .gitignore
+
+```gitignore
+# Images
+*.jpg
+*.jpeg
+*.png
+
+# Datasets
+dataset/
+images/
+input/
+
+# Python
+__pycache__/
+.ipynb_checkpoints/
+
+# Large generated matrices
+*.npy
+```
+
+---
+
+## 📬 Contact
+
+**Pushkar Singh**
+
+- GitHub: https://github.com/PushkarSingh20
+- LinkedIn: https://www.linkedin.com/in/pushkar-singh-512648235/
+- Email: pushkarofficial20@gmail.com
+
+> Building AI systems that bridge computer vision, NLP, and intelligent optimization.
+
+---
+
+## 📜 License
+
+This project is licensed under the **BSD 3-Clause License**.
+
+Copyright (c) 2026 Pushkar Singh.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted under the terms of the BSD 3-Clause License.
